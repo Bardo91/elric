@@ -24,17 +24,26 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#ifndef ELRIC_HAL_PORT_H_
-#define ELRIC_HAL_PORT_H_
+#ifndef ELRIC_HAL_REGISTER_H_
+#define ELRIC_HAL_REGISTER_H_
 
 namespace elric{
-    template<uint16_t PORT_>
-    class Port{
+
+    template<typename Type_, uint16_t dir_>
+    class Register{
     public:
-        static constexpr uint16_t PORT  = PORT_;
-        static constexpr uint16_t DDR   = PORT_-1;
-        static constexpr uint16_t PIN   = PORT_-2;
-    }; 
+        void operator=(Type_ _val){
+            *reinterpret_cast<Type_*>(direction_) = _val;
+        }
+
+        operator Type_() const{
+            return *reinterpret_cast<volatile Type_*>(direction_);
+        }
+
+    private:
+        static constexpr uint16_t direction_ = dir_ + __SFR_OFFSET; // Need to add memory offset. Just used in AVR_ARCH < 100.
+    };
 }
+
 
 #endif

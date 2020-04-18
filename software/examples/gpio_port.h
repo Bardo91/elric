@@ -24,57 +24,19 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#ifndef ELRIC_HAL_PIN_H_
-#define ELRIC_HAL_PIN_H_
+#ifndef ELRIC_HAL_PORT_H_
+#define ELRIC_HAL_PORT_H_
 
-#include <gpio_port.h>
+#include <register.h>
 
 namespace elric{
-    
-    template<uint16_t PORT_, uint8_t PIN_>
-    class Pin{
+    template<uint16_t PORT_>
+    class GpioPort{
     public:
-        void setInput();
-        void setOutput();
-
-        void setHigh();
-        void setLow();
-
-        bool read();
-
-    private:
-        static constexpr uint8_t bitmask_ = (1<<PIN_);
-
-        GpioPort<PORT_> gpioPort_;
-    };
-
-
-    
-    template<uint16_t PORT_, uint8_t PIN_>
-    inline void Pin<PORT_, PIN_>::setInput(){
-        gpioPort_.ddr_ = gpioPort_.ddr_ & ~bitmask_;
-    }
-    
-    template<uint16_t PORT_, uint8_t PIN_>
-    inline void Pin<PORT_, PIN_>::setOutput(){
-        gpioPort_.ddr_ = gpioPort_.ddr_ | bitmask_;
-    }
-
-    template<uint16_t PORT_, uint8_t PIN_>
-    inline void Pin<PORT_, PIN_>::setHigh(){
-        gpioPort_.port_ = gpioPort_.port_ | bitmask_;
-    }
-
-    template<uint16_t PORT_, uint8_t PIN_>
-    inline void Pin<PORT_, PIN_>::setLow(){
-        gpioPort_.port_ = gpioPort_.port_ & ~bitmask_;
-    }
-
-    template<uint16_t PORT_, uint8_t PIN_>
-    inline bool Pin<PORT_, PIN_>::read(){
-        return gpioPort_.pin_ & bitmask_;
-    }
-    
+        Register<uint8_t, PORT_> port_;
+        Register<uint8_t, PORT_-1> ddr_;
+        Register<uint8_t, PORT_-2> pin_;
+    }; 
 }
 
 #endif

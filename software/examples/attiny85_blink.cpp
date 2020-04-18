@@ -30,7 +30,7 @@
 #include <attiny85.h>
 
 int main (void) {
-    
+
     elric::ATtiny85 at85;
     at85.PinB0.setOutput();  // led 1
     at85.PinB1.setOutput();  // led 2
@@ -45,7 +45,7 @@ int main (void) {
             at85.PinB1.setLow();
             at85.PinB2.setLow();
 
-            if(!(i%2)){w
+            if(!(i%2)){
                 at85.PinB3.setHigh();
                 if(i)
                     at85.PinB4.setHigh();
