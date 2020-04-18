@@ -28,16 +28,31 @@
 #define ELRIC_HAL_ATTINY85_H_
 
 #include <pin.h>
+#include <timer.h>
 
 namespace elric{
 
     class ATtiny85{
+    private:
+        struct Timer1Trait{
+            static constexpr uint16_t tccr0A = 0x2A;
+            static constexpr uint16_t tccr0B = 0x33;
+            static constexpr uint16_t tcnt0 = 0x32;
+            static constexpr uint16_t ocr0A = 0x29;
+            static constexpr uint16_t ocr0B = 0x28;
+            static constexpr uint16_t timsk = 0x39;
+            static constexpr uint16_t tifr = 0x38;
+        };
+    
     public:
         Pin<0x18, 0> PinB0;
         Pin<0x18, 1> PinB1;
         Pin<0x18, 2> PinB2;
         Pin<0x18, 3> PinB3;
         Pin<0x18, 4> PinB4;
+
+        Timer<Timer1Trait> Timer1; 
+
 
     };
 

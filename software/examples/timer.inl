@@ -24,31 +24,49 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#include<avr/io.h>
-#include <attiny85.h>
-#include <util/delay.h>
 
-int main (void) {
-    elric::ATtiny85 t85;
+namespace elric{
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setMode(TimerModes _mode){
+        // Clear current configuration
+        controlRegisterA_ = controlRegisterA_ & 0b11111100;
+        controlRegisterB_ = controlRegisterB_ & 0b11111011;
 
-    t85.PinB0.setOutput();
-    t85.PinB1.setOutput();
 
-    t85.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
-    t85.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
-    t85.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
-    t85.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
+		controlRegisterA_ = controlRegisterA_ | (_mode & 0b00000011);
+		controlRegisterB_ = controlRegisterB_ | (_mode & 0b00000100);
 
-    while(1){
-        for(unsigned i=0; i< 255; i++){
-            t85.Timer1.setCompareA(i);
-            t85.Timer1.setCompareB(i);
-            _delay_ms(10);   
-        }
-        for(unsigned i=255; i>0; i--){
-            t85.Timer1.setCompareA(i);
-            t85.Timer1.setCompareB(i);
-            _delay_ms(10);   
-        }
     }
-} 
+    
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setCompareModeA(uint8_t _mode){
+        // Clear previous mode
+        controlRegisterA_ = controlRegisterA_ & 0b00111111;
+		controlRegisterA_ = controlRegisterA_ | _mode << 6;
+    }
+
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setCompareA(uint8_t _value){
+        outputCompareRegisterA_ = _value;
+    }
+
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setCompareModeB(uint8_t _mode){
+        // Clear previous mode
+        controlRegisterA_ = controlRegisterA_ & 0b11001111;
+		controlRegisterA_ = controlRegisterA_ | _mode << 4;
+    }
+    
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setCompareB(uint8_t _value){
+        outputCompareRegisterB_ = _value;
+    }
+    
+    template<typename RegisterTraits_>
+    void Timer<RegisterTraits_>::setPrescaler(uint8_t _prescaler){
+        // Clear previous prescaler
+        controlRegisterB_ = controlRegisterB_ & 0xf8;
+		controlRegisterB_ = controlRegisterB_ | _prescaler;
+    }
+
+}
