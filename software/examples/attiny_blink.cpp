@@ -24,31 +24,40 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#include<avr/io.h>
-#include <attiny85.h>
+
+#include <avr/io.h>
 #include <util/delay.h>
+#include <attiny85.h>
+#include <attiny84.h>
 
 int main (void) {
-    elric::ATtiny85 t85;
 
-    t85.PinB0.setOutput();
-    t85.PinB1.setOutput();
+    // elric::ATtiny85 tiny;
+    elric::ATtiny84 tiny;
+    tiny.PinB0.setOutput();  // led 1
+    tiny.PinB1.setOutput();  // led 2
+    tiny.PinB2.setOutput();  // led 3
 
-    t85.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
-    t85.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
-    t85.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
-    t85.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
+    while (1) {
+        for(uint8_t i = 0; i < 3; i++){
+            tiny.PinB0.setLow();
+            tiny.PinB1.setLow();
+            tiny.PinB2.setLow();
 
-    while(1){
-        for(unsigned i=0; i< 255; i++){
-            t85.Timer1.setCompareA(i);
-            t85.Timer1.setCompareB(i);
-            _delay_ms(10);   
-        }
-        for(unsigned i=255; i>0; i--){
-            t85.Timer1.setCompareA(i);
-            t85.Timer1.setCompareB(i);
-            _delay_ms(10);   
+            switch (i) {
+            case 0:
+                tiny.PinB0.setHigh();
+                break;
+            case 1:
+                tiny.PinB1.setHigh();
+                break;
+            case 2:
+                tiny.PinB2.setHigh();
+                break;
+            }
+            _delay_ms(1000);   
         }
     }
-} 
+
+    return 1;
+}

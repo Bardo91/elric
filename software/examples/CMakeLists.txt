@@ -125,11 +125,11 @@ add_definitions("-std=c++14")
 ##################################################################################
 # add AVR executable
 ##################################################################################
-add_avr_executable(attiny85_blink attiny85_blink.cpp)
-avr_target_include_directories(attiny85_blink PRIVATE ./)
+add_avr_executable(attiny_blink attiny_blink.cpp)
+avr_target_include_directories(attiny_blink PRIVATE ./)
 
-add_avr_executable(attiny85_pwm attiny85_pwm.cpp)
-avr_target_include_directories(attiny85_pwm PRIVATE ./)
+add_avr_executable(attiny_pwm attiny_pwm.cpp)
+avr_target_include_directories(attiny_pwm PRIVATE ./)
 
 ##################################################################################
 # status messages

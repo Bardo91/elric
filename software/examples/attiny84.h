@@ -32,6 +32,17 @@
 namespace elric{
 
     class ATtiny84{
+    private:
+        struct Timer1Trait{
+            static constexpr uint16_t tccr0A = 0x30;
+            static constexpr uint16_t tccr0B = 0x33;
+            static constexpr uint16_t tcnt0 = 0x32;
+            static constexpr uint16_t ocr0A = 0x36;
+            static constexpr uint16_t ocr0B = 0x3C;
+            static constexpr uint16_t timsk = 0x39;
+            static constexpr uint16_t tifr = 0x38;
+        };
+
     public:
         Pin<0x1B, 0> PinA0;
         Pin<0x1B, 1> PinA1;
@@ -47,6 +58,7 @@ namespace elric{
         Pin<0x18, 2> PinB2;
         Pin<0x18, 3> PinB3;
 
+        Timer<Timer1Trait> Timer1; 
     };
 
 }

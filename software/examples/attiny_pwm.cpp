@@ -24,51 +24,34 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-
-#include <avr/io.h>
+#include<avr/io.h>
 #include <util/delay.h>
 #include <attiny85.h>
+#include <attiny84.h>
 
 int main (void) {
+    // elric::ATtiny85 tiny;
+    elric::ATtiny84 tiny;
 
-    elric::ATtiny85 at85;
-    at85.PinB0.setOutput();  // led 1
-    at85.PinB1.setOutput();  // led 2
-    at85.PinB2.setOutput();  // led 3
-    at85.PinB3.setOutput();  // enable
-    at85.PinB4.setOutput();  // phase
+    tiny.PinB0.setOutput();
+    tiny.PinB1.setOutput();
+    tiny.PinB2.setOutput();
 
-    at85.PinB4.setHigh();
-    while (1) {
-        for(uint8_t i = 0; i < 3; i++){
-            at85.PinB0.setLow();
-            at85.PinB1.setLow();
-            at85.PinB2.setLow();
+    tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
+    tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
 
-            if(!(i%2)){
-                at85.PinB3.setHigh();
-                if(i)
-                    at85.PinB4.setHigh();
-                else
-                    at85.PinB4.setLow();
-            }else{
-                at85.PinB3.setLow();
-            }
-            
-            switch (i) {
-            case 0:
-                at85.PinB0.setHigh();
-                break;
-            case 1:
-                at85.PinB1.setHigh();
-                break;
-            case 2:
-                at85.PinB2.setHigh();
-                break;
-            }
-            _delay_ms(1000);   
+    while(1){
+        for(unsigned i=0; i< 255; i++){
+            tiny.Timer1.setCompareA(i);
+            tiny.Timer1.setCompareB(i);
+            _delay_ms(10);   
+        }
+        for(unsigned i=255; i>0; i--){
+            tiny.Timer1.setCompareA(i);
+            tiny.Timer1.setCompareB(i);
+            _delay_ms(10);   
         }
     }
-
-    return 1;
-}
+} 
