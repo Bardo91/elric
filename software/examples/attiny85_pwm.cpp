@@ -26,17 +26,26 @@
 
 #include<avr/io.h>
 #include <attiny85.h>
+#include <util/delay.h>
 
 int main (void) {
 
-    TCCR0A &= 0b00000011;   // Fast-PWM
-    TCCR0B &= 0b00000001;   // No prescaling internal clock
+    //pinMode(PB0, OUTPUT);
+    DDRB |= (1 << PB0);
 
-    DDRB |= 1<<2;   // set pin0 output
- 
-    OCR0A = 128;    // 50% duty
+    TCCR0A = (1<<WGM01)|(1<<WGM00) | (1<<COM0A1) | (0 << COM0A0) | (1<<COM0B1) | (1 << COM0B0);
+    TCCR0B = (1<<CS00)| (0<<WGM02);
 
     while(1){
-
+        for(unsigned i=0; i< 255; i++){
+            OCR0A = i;
+            OCR0B = i;
+            _delay_ms(10);   
+        }
+        for(unsigned i=255; i>0; i--){
+            OCR0A = i;
+            OCR0B = i;
+            _delay_ms(10);   
+        }
     }
 } 
