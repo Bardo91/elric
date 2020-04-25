@@ -42,16 +42,30 @@ int main (void) {
     tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
     tiny.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
 
+    tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
+    tiny.Adc.autoTrigger(true);
+    tiny.Adc.selectPin(0);
+    tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_2);
+    tiny.Adc.enable();
+
     while(1){
-        for(unsigned i=0; i< 255; i++){
-            tiny.Timer1.setCompareA(i);
-            tiny.Timer1.setCompareB(i);
-            _delay_ms(10);   
-        }
-        for(unsigned i=255; i>0; i--){
-            tiny.Timer1.setCompareA(i);
-            tiny.Timer1.setCompareB(i);
-            _delay_ms(10);   
-        }
+        uint16_t potentiometer = tiny.Adc.read();
+        uint8_t pwm = *((uint8_t*)&potentiometer);
+
+        tiny.Timer1.setCompareA(pwm);
+        tiny.Timer1.setCompareB(pwm);
+        _delay_ms(10);   
+
+
+        // for(unsigned i=0; i< 255; i++){
+        //     tiny.Timer1.setCompareA(i);
+        //     tiny.Timer1.setCompareB(i);
+        //     _delay_ms(10);   
+        // }
+        // for(unsigned i=255; i>0; i--){
+        //     tiny.Timer1.setCompareA(i);
+        //     tiny.Timer1.setCompareB(i);
+        //     _delay_ms(10);   
+        // }
     }
 } 

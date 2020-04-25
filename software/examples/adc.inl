@@ -24,26 +24,29 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
+#include <assert.h>
 
 namespace elric{
 
     template<typename RegisterTraits_>
-    void AnalogDigitalConverter<RegisterTraits_>::enable(uint8_t _pin){
-        digitalDisable_ = digitalDisable_ | 1 << _pin;
-
+    void AnalogDigitalConverter<RegisterTraits_>::enable(){
         controlStatusB_ = controlStatusB_ | 1<<6;
     }
 
     template<typename RegisterTraits_>
-    void AnalogDigitalConverter<RegisterTraits_>::disable(uint8_t _pin){
-        digitalDisable_ = digitalDisable_ & ~(1 << _pin);
-        
-        if(!digitalDisable_)
-            controlStatusB_ = controlStatusB_ & ~(1<<6);
+    void AnalogDigitalConverter<RegisterTraits_>::disable(){
+        controlStatusB_ = controlStatusB_ & ~(1<<6);
     }
 
     template<typename RegisterTraits_>
-    void AnalogDigitalConverter<RegisterTraits_>::setPrescaler(PrescalerADC _factor){
+    void AnalogDigitalConverter<RegisterTraits_>::selectPin(uint8_t _pin){
+        assert(_pin < 8);
+        multiplexer_ = multiplexer_ &  ~0b00111111; // Clear  bits
+        multiplexer_ = multiplexer_ | _pin; // set pin
+    }
+
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::setPrescaler(ADCPrescaler _factor){
         controlStatusA_ = controlStatusA_ & ~(0b00000111);  // clean fits
         controlStatusA_ = controlStatusA_ | _factor; // set values 
 
@@ -56,10 +59,16 @@ namespace elric{
     }
 
     template<typename RegisterTraits_>
-    void AnalogDigitalConverter<RegisterTraits_>::triggerSource(TriggerSource _source){
+    void AnalogDigitalConverter<RegisterTraits_>::triggerSource(ADCTriggerSource _source){
         controlStatusB_ = controlStatusB_ & ~(0b00000111);  // clean fits
         controlStatusB_ = controlStatusB_ | _source; // set values 
     }
         
+    
+    template<typename RegisterTraits_>
+    uint16_t AnalogDigitalConverter<RegisterTraits_>::read(){
+        uint16_t result = dataL_ + (dataH_ << 8);
+        return result;
+    }
 
 }

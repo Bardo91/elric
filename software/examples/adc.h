@@ -31,7 +31,7 @@
 
 namespace elric{
 
-    enum PrescalerADC { 
+    enum ADCPrescaler { 
         factor_2 = 0,
         factor_2b,
         factor_4,
@@ -42,7 +42,7 @@ namespace elric{
         factor_128 
     };
 
-    enum TriggerSource {
+    enum ADCTriggerSource {
         FreeRunning = 0,
         AnalogComparator,
         ExtenerlInterruptRequest0,
@@ -56,13 +56,17 @@ namespace elric{
     template<typename RegisterTraits_>
     class AnalogDigitalConverter{
     public:
-        void enable(uint8_t _pin);
-        void disable(uint8_t _pin);
+        void enable();
+        void disable();
 
-        void setPrescaler(PrescalerADC _factor);
+        void selectPin(uint8_t _pin);
+
+        void setPrescaler(ADCPrescaler _factor);
 
         void autoTrigger(bool _on);
-        void triggerSource(TriggerSource _source);
+        void triggerSource(ADCTriggerSource _source);
+
+        uint16_t read();
 
     private:
         // Registers
