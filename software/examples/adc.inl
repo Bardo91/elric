@@ -24,56 +24,42 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#ifndef ELRIC_HAL_ATTINY84_H_
-#define ELRIC_HAL_ATTINY84_H_
-
-#include <pin.h>
-#include <timer.h>
-#include <adc.h>
-
 
 namespace elric{
 
-    class ATtiny84{
-    private:
-        struct Timer1Trait{
-            static constexpr uint16_t tccr0A = 0x30;
-            static constexpr uint16_t tccr0B = 0x33;
-            static constexpr uint16_t tcnt0 = 0x32;
-            static constexpr uint16_t ocr0A = 0x36;
-            static constexpr uint16_t ocr0B = 0x3C;
-            static constexpr uint16_t timsk = 0x39;
-            static constexpr uint16_t tifr = 0x38;
-        };
-        struct ADCTrait{
-            static constexpr uint16_t admux = 0x07;
-            static constexpr uint16_t adcsra = 0x06;
-            static constexpr uint16_t adcsrb = 0x03;
-            static constexpr uint16_t didr0 = 0x01;
-            static constexpr uint16_t adch = 0x05;
-            static constexpr uint16_t adchl = 0x04;
-        };
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::enable(uint8_t _pin){
+        digitalDisable_ = digitalDisable_ | 1 << _pin;
 
-    public:
-        Pin<0x1B, 0> PinA0;
-        Pin<0x1B, 1> PinA1;
-        Pin<0x1B, 2> PinA2;
-        Pin<0x1B, 3> PinA3;
-        Pin<0x1B, 4> PinA4;
-        Pin<0x1B, 5> PinA5;
-        Pin<0x1B, 6> PinA6;
-        Pin<0x1B, 7> PinA7;
+        controlStatusB_ = controlStatusB_ | 1<<6;
+    }
 
-        Pin<0x18, 0> PinB0;
-        Pin<0x18, 1> PinB1;
-        Pin<0x18, 2> PinB2;
-        Pin<0x18, 3> PinB3;
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::disable(uint8_t _pin){
+        digitalDisable_ = digitalDisable_ & ~(1 << _pin);
+        
+        if(!digitalDisable_)
+            controlStatusB_ = controlStatusB_ & ~(1<<6);
+    }
 
-        Timer<Timer1Trait> Timer1; 
-        AnalogDigitalConverter<ADCTrait> Adc;
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::setPrescaler(PrescalerADC _factor){
+        controlStatusA_ = controlStatusA_ & ~(0b00000111);  // clean fits
+        controlStatusA_ = controlStatusA_ | _factor; // set values 
 
-    };
+    }
+
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::autoTrigger(bool _on){
+        controlStatusA_ = controlStatusA_ & ~(1<<5);
+        controlStatusA_ = controlStatusA_ | (_on<<5);
+    }
+
+    template<typename RegisterTraits_>
+    void AnalogDigitalConverter<RegisterTraits_>::triggerSource(TriggerSource _source){
+        controlStatusB_ = controlStatusB_ & ~(0b00000111);  // clean fits
+        controlStatusB_ = controlStatusB_ | _source; // set values 
+    }
+        
 
 }
-
-#endif

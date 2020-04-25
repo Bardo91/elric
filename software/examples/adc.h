@@ -24,56 +24,60 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-#ifndef ELRIC_HAL_ATTINY84_H_
-#define ELRIC_HAL_ATTINY84_H_
+#ifndef ELRIC_HAL_ADC_H_
+#define ELRIC_HAL_ADC_H_
 
-#include <pin.h>
-#include <timer.h>
-#include <adc.h>
-
+#include <register.h>
 
 namespace elric{
 
-    class ATtiny84{
-    private:
-        struct Timer1Trait{
-            static constexpr uint16_t tccr0A = 0x30;
-            static constexpr uint16_t tccr0B = 0x33;
-            static constexpr uint16_t tcnt0 = 0x32;
-            static constexpr uint16_t ocr0A = 0x36;
-            static constexpr uint16_t ocr0B = 0x3C;
-            static constexpr uint16_t timsk = 0x39;
-            static constexpr uint16_t tifr = 0x38;
-        };
-        struct ADCTrait{
-            static constexpr uint16_t admux = 0x07;
-            static constexpr uint16_t adcsra = 0x06;
-            static constexpr uint16_t adcsrb = 0x03;
-            static constexpr uint16_t didr0 = 0x01;
-            static constexpr uint16_t adch = 0x05;
-            static constexpr uint16_t adchl = 0x04;
-        };
+    enum PrescalerADC { 
+        factor_2 = 0,
+        factor_2b,
+        factor_4,
+        factor_8,
+        factor_16,
+        factor_32,
+        factor_64,
+        factor_128 
+    };
 
+    enum TriggerSource {
+        FreeRunning = 0,
+        AnalogComparator,
+        ExtenerlInterruptRequest0,
+        Timer0CompareMatchA,
+        Timer0Overflow,
+        Timer1CompareMatchB,
+        Timer1Overflow,
+        Timer1CaptureEvent
+    };
+
+    template<typename RegisterTraits_>
+    class AnalogDigitalConverter{
     public:
-        Pin<0x1B, 0> PinA0;
-        Pin<0x1B, 1> PinA1;
-        Pin<0x1B, 2> PinA2;
-        Pin<0x1B, 3> PinA3;
-        Pin<0x1B, 4> PinA4;
-        Pin<0x1B, 5> PinA5;
-        Pin<0x1B, 6> PinA6;
-        Pin<0x1B, 7> PinA7;
+        void enable(uint8_t _pin);
+        void disable(uint8_t _pin);
 
-        Pin<0x18, 0> PinB0;
-        Pin<0x18, 1> PinB1;
-        Pin<0x18, 2> PinB2;
-        Pin<0x18, 3> PinB3;
+        void setPrescaler(PrescalerADC _factor);
 
-        Timer<Timer1Trait> Timer1; 
-        AnalogDigitalConverter<ADCTrait> Adc;
+        void autoTrigger(bool _on);
+        void triggerSource(TriggerSource _source);
+
+    private:
+        // Registers
+        Register<uint8_t, RegisterTraits_::admux>   multiplexer_;
+        Register<uint8_t, RegisterTraits_::adcsra>  controlStatusA_;
+        Register<uint8_t, RegisterTraits_::adcsrb>  controlStatusB_;
+        Register<uint8_t, RegisterTraits_::didr0>   digitalDisable_;
+        Register<uint8_t, RegisterTraits_::adch>    dataH_;
+        Register<uint8_t, RegisterTraits_::adchl>   dataL_;
+        
 
     };
 
 }
+
+#include <adc.inl>
 
 #endif
