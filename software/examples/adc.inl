@@ -30,12 +30,12 @@ namespace elric{
 
     template<typename RegisterTraits_>
     void AnalogDigitalConverter<RegisterTraits_>::enable(){
-        controlStatusB_ = controlStatusB_ | 1<<6;
+        controlStatusA_ = controlStatusA_ | 1<<7;
     }
 
     template<typename RegisterTraits_>
     void AnalogDigitalConverter<RegisterTraits_>::disable(){
-        controlStatusB_ = controlStatusB_ & ~(1<<6);
+        controlStatusA_ = controlStatusA_ & ~(1<<7);
     }
 
     template<typename RegisterTraits_>
@@ -53,12 +53,6 @@ namespace elric{
     }
 
     template<typename RegisterTraits_>
-    void AnalogDigitalConverter<RegisterTraits_>::autoTrigger(bool _on){
-        controlStatusA_ = controlStatusA_ & ~(1<<5);
-        controlStatusA_ = controlStatusA_ | (_on<<5);
-    }
-
-    template<typename RegisterTraits_>
     void AnalogDigitalConverter<RegisterTraits_>::triggerSource(ADCTriggerSource _source){
         controlStatusB_ = controlStatusB_ & ~(0b00000111);  // clean fits
         controlStatusB_ = controlStatusB_ | _source; // set values 
@@ -66,9 +60,34 @@ namespace elric{
         
     
     template<typename RegisterTraits_>
-    uint16_t AnalogDigitalConverter<RegisterTraits_>::read(){
-        uint16_t result = dataL_ + (dataH_ << 8);
-        return result;
+    void AnalogDigitalConverter<RegisterTraits_>::setResolution(ADCResolution _resolution){
+        controlStatusB_ = controlStatusB_ & ~(1<<4); // Clear bit
+        switch (_resolution) {
+        case ADCResolution::bits10:
+            // nothing
+            break;
+        case ADCResolution::bits8:
+            controlStatusB_ = controlStatusB_ | (1<<4);
+            break;
+        }
+    }
+
+    template<typename RegisterTraits_>
+    AnalogDigitalConverter<RegisterTraits_>::operator uint8_t(){
+        controlStatusA_ = controlStatusA_ | 1<<6;
+        while (controlStatusA_ & (1 << 6) );
+        
+        uint8_t val = dataH_;
+        return val;
+    }
+
+    template<typename RegisterTraits_>
+    AnalogDigitalConverter<RegisterTraits_>::operator uint16_t(){
+        controlStatusA_ = controlStatusA_ | 1<<6;
+        while (controlStatusA_ & (1 << 6) );
+
+        uint16_t val = dataL_ | (dataH_ << 8);
+        return val;
     }
 
 }

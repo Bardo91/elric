@@ -53,6 +53,11 @@ namespace elric{
         Timer1CaptureEvent
     };
 
+    enum ADCResolution{
+        bits10,
+        bits8
+    };
+
     template<typename RegisterTraits_>
     class AnalogDigitalConverter{
     public:
@@ -63,10 +68,11 @@ namespace elric{
 
         void setPrescaler(ADCPrescaler _factor);
 
-        void autoTrigger(bool _on);
         void triggerSource(ADCTriggerSource _source);
 
-        uint16_t read();
+        void setResolution(ADCResolution _resolution);
+        operator uint8_t();
+        operator uint16_t();
 
     private:
         // Registers
@@ -76,7 +82,8 @@ namespace elric{
         Register<uint8_t, RegisterTraits_::didr0>   digitalDisable_;
         Register<uint8_t, RegisterTraits_::adch>    dataH_;
         Register<uint8_t, RegisterTraits_::adchl>   dataL_;
-        
+
+        ADCResolution resolution = ADCResolution::bits10;     
 
     };
 

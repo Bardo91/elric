@@ -37,26 +37,29 @@ int main (void) {
     tiny.PinB1.setOutput();
     tiny.PinB2.setOutput();
 
-    tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
-    tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
-    tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
-    tiny.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
+    // tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
+    // tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
+    // tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
+    // tiny.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
 
     tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
-    tiny.Adc.autoTrigger(true);
-    tiny.Adc.selectPin(0);
-    tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_2);
+    tiny.Adc.selectPin(1);
+    tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_64);
+    tiny.Adc.setResolution(elric::ADCResolution::bits8);
     tiny.Adc.enable();
 
-    while(1){
-        uint16_t potentiometer = tiny.Adc.read();
-        uint8_t pwm = *((uint8_t*)&potentiometer);
+     while(1) {
+        uint8_t pwm = tiny.Adc;
+        
+        if (pwm > 128) {
+            tiny.PinB2.setLow();
+        } else {
+            tiny.PinB2.setHigh();
+        }
 
-        tiny.Timer1.setCompareA(pwm);
-        tiny.Timer1.setCompareB(pwm);
-        _delay_ms(10);   
+    }
 
-
+    // while(1){
         // for(unsigned i=0; i< 255; i++){
         //     tiny.Timer1.setCompareA(i);
         //     tiny.Timer1.setCompareB(i);
@@ -67,5 +70,5 @@ int main (void) {
         //     tiny.Timer1.setCompareB(i);
         //     _delay_ms(10);   
         // }
-    }
+    // }
 } 
