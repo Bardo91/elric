@@ -37,10 +37,13 @@ int main (void) {
     tiny.PinB1.setOutput();
     tiny.PinB2.setOutput();
 
-    // tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
-    // tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
-    // tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
-    // tiny.Timer1.setPrescaler(elric::PrescalerModes::no_prescaler);
+    tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
+    tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setPrescaler(elric::PrescalerModes::prescaler_64);
+
+    // TCCR0A = (1<<COM0A1) | (1<<COM0B0) | (1<<WGM00);  // Clear OC0A/OC0B on Compare Match (bit 7 + 6). PWM, Phase Correct
+	// TCCR0B = (1<<CS02);   // clkI/O/256(from prescaler)
 
     tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
     tiny.Adc.selectPin(1);
@@ -50,12 +53,8 @@ int main (void) {
 
      while(1) {
         uint8_t pwm = tiny.Adc;
-        
-        if (pwm > 128) {
-            tiny.PinB2.setLow();
-        } else {
-            tiny.PinB2.setHigh();
-        }
+        OCR0A = pwm;
+        // tiny.Timer1.setCompareA(pwm); 
 
     }
 
