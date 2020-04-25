@@ -53,8 +53,8 @@ int main (void) {
 
      while(1) {
         uint8_t pwm = tiny.Adc;
-        OCR0A = pwm;
-        // tiny.Timer1.setCompareA(pwm); 
+        // OCR0A = pwm;
+        tiny.Timer1.setCompareA(pwm); 
 
     }
 

@@ -33,7 +33,7 @@ namespace elric{
     class Register{
     public:
         void operator=(Type_ _val){
-            *reinterpret_cast<Type_*>(direction_) = _val;
+            *reinterpret_cast<volatile Type_*>(direction_) = _val;
         }
 
         operator Type_() const{
