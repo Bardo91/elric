@@ -29,12 +29,13 @@
 #include <attiny85.h>
 #include <attiny84.h>
 
+#include <pidpp/PID.h>
+
 int main (void) {
     // elric::ATtiny85 tiny;
     elric::ATtiny84 tiny;
 
     tiny.PinB0.setOutput();
-    tiny.PinB1.setOutput();
     tiny.PinB2.setOutput();
 
     tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
@@ -42,20 +43,28 @@ int main (void) {
     tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
     tiny.Timer1.setPrescaler(elric::PrescalerModes::prescaler_8);
 
-    // tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
-    // tiny.Adc.selectPin(1);
-    // tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_64);
-    // tiny.Adc.setResolution(elric::ADCResolution::bits8);
-    // tiny.Adc.enable();
+    tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
+    tiny.Adc.selectPin(1);
+    tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_8);
+    tiny.Adc.setResolution(elric::ADCResolution::bits8);
+    tiny.Adc.enable();
+
+    pidpp::PID pid(5,0.01,1, -128, 128);
+    pid.reference(0);
 
     while(1) {
-        // uint8_t pwm = tiny.Adc;
-        // OCR0A = pwm;     
-        // tiny.Timer1.setCompareA(pwm); 
-        for(unsigned i=0; i< 255; i++){
-            tiny.Timer1.setCompareA(i);
-            _delay_ms(10);   
+        int adc = tiny.Adc;
+        int u = pid.update(adc-128, 10);
+        if(u < 0){
+            tiny.PinB0.setLow();
+            u *= -1;
+        } else if(u > 0){
+            tiny.PinB0.setHigh();
         }
+
+        tiny.Timer1.setCompareA(u);
+        _delay_ms(10);   
+    
     }
 
     // while(1){
