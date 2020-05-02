@@ -41,7 +41,7 @@ set(AVR_PROGRAMMER usbasp)
 set(AVR_UPLOADTOOL_PORT usb)
 # AVR and fuses needs to be set
 if(NOT AVR_MCU)
-  set(AVR_MCU attiny85)
+  set(AVR_MCU attiny84)
 endif()
 if(NOT MCU_SPEED)
   set(MCU_SPEED "1600000UL")
@@ -120,17 +120,30 @@ add_definitions("-funsigned-char")
 add_definitions("-funsigned-bitfields")
 add_definitions("-ffunction-sections")
 add_definitions("-c")
-add_definitions("-std=c++14")
+add_definitions("-std=c++17")
+
 
 ##################################################################################
 # add AVR executable
 ##################################################################################
-add_avr_executable(attiny_blink attiny_blink.cpp)
-avr_target_include_directories(attiny_blink PRIVATE ./)
+# Collect all sources and headers
+file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.cpp")
+file(GLOB_RECURSE HEADER_FILES "include/*.inl" "include/*.h")
 
-add_avr_executable(attiny_pwm attiny_pwm.cpp)
-avr_target_include_directories(attiny_pwm PRIVATE ./)
+add_avr_library(elric ${SOURCE_FILES} ${HEADER_FILES})
+avr_target_include_directories(elric PUBLIC ./include)
 
+##################################################################################
+# add AVR executable
+##################################################################################
+add_avr_executable(attiny_blink examples/attiny_blink.cpp)
+avr_target_link_libraries(attiny_blink elric)
+
+add_avr_executable(attiny_pwm examples/attiny_pwm.cpp)
+avr_target_link_libraries(attiny_pwm elric)
+
+add_avr_executable(attiny_motor_pid examples/attiny_motor_pid.cpp)
+avr_target_link_libraries(attiny_motor_pid elric)
 ##################################################################################
 # status messages
 ##################################################################################

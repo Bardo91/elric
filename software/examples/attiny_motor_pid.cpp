@@ -24,35 +24,50 @@
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-
-#include <avr/io.h>
+#include<avr/io.h>
 #include <util/delay.h>
 #include <attiny85.h>
 #include <attiny84.h>
 
 int main (void) {
-
     // elric::ATtiny85 tiny;
     elric::ATtiny84 tiny;
-    tiny.PinA2.setOutput();  // led 1
-    tiny.PinB0.setOutput();  // led 1
 
-    while (1) {
-        for(uint8_t i = 0; i < 3; i++){
-            tiny.PinB0.setLow();
-            tiny.PinA2.setLow();
+    tiny.PinB0.setOutput();
+    tiny.PinB1.setOutput();
+    tiny.PinB2.setOutput();
 
-            switch (i) {
-            case 0:
-                tiny.PinB0.setHigh();
-                break;
-            case 1:
-                tiny.PinA2.setHigh();
-                break;
-            }
-            _delay_ms(1000);   
+    tiny.Timer1.setMode(elric::TimerModes::fast_PWM_MAX);
+    tiny.Timer1.setCompareModeA(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setCompareModeB(elric::CompareModeFastPWM::fpwm_non_inverting);
+    tiny.Timer1.setPrescaler(elric::PrescalerModes::prescaler_8);
+
+    // tiny.Adc.triggerSource(elric::ADCTriggerSource::FreeRunning);
+    // tiny.Adc.selectPin(1);
+    // tiny.Adc.setPrescaler(elric::ADCPrescaler::factor_64);
+    // tiny.Adc.setResolution(elric::ADCResolution::bits8);
+    // tiny.Adc.enable();
+
+    while(1) {
+        // uint8_t pwm = tiny.Adc;
+        // OCR0A = pwm;     
+        // tiny.Timer1.setCompareA(pwm); 
+        for(unsigned i=0; i< 255; i++){
+            tiny.Timer1.setCompareA(i);
+            _delay_ms(10);   
         }
     }
 
-    return 1;
-}
+    // while(1){
+        // for(unsigned i=0; i< 255; i++){
+        //     tiny.Timer1.setCompareA(i);
+        //     tiny.Timer1.setCompareB(i);
+        //     _delay_ms(10);   
+        // }
+        // for(unsigned i=255; i>0; i--){
+        //     tiny.Timer1.setCompareA(i);
+        //     tiny.Timer1.setCompareB(i);
+        //     _delay_ms(10);   
+        // }
+    // }
+} 
