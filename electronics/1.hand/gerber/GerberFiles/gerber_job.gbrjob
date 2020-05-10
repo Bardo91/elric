@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2020-05-10T21:32:31Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.5.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "elric20-01A"
+        },
+        "Owner": "Pablo Ramon <pabramsor@gmail.com>",
+        "Size": {
+            "X": 113.1,
+            "Y": 72.2
+        }
+    }
+}

@@ -1,0 +1,10 @@
+Partlist exported from D:/programming/elric/electronics/0.shared/models/elric20-01A.sch at 5/10/2020 23:32
+
+Qty Value          Device         Package        Parts                                                     Description POPULARITY
+1                  PINHD-1X1      1X01           JP3                                                       PIN HEADER  64        
+5                  PINHD-1X2      1X02           I2C_CON, SCL_JUMPER, SCL_JUMPER1, SDA_JUMPER, SDA_JUMPER1 PIN HEADER  98        
+3                  PINHD-2X3      2X03           JP1, JP2, JP5                                             PIN HEADER  62        
+3   ATTINY84A-PU   ATTINY84A-PU   ATTINY84A-PU   U$1, U$8, U$21                                                                  
+6   DRV8838        DRV8838        DRV8838        U$2, U$3, U$4, U$5, U$6, U$7                                                    
+6   PAD_SMD_X2_BIG PAD_SMD_X2_BIG PAD_SMD_X2_BIG U$9, U$10, U$11, U$12, U$13, U$14                                               
+6   PAD_SMD_X3     PAD_SMD_X3     PAD_SMD_X3     U$15, U$16, U$17, U$18, U$19, U$20                                              
