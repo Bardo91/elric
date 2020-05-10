@@ -3,7 +3,7 @@
 <eagle version="9.5.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="1" unitdist="mm" unit="mm" style="dots" multiple="1" display="no" altdistance="0.1" altunitdist="mm" altunit="mm"/>
@@ -77,6 +77,7 @@
 <wire x1="111" y1="0" x2="111" y2="72" width="0" layer="20"/>
 <wire x1="111" y1="72" x2="-2" y2="72" width="0" layer="20"/>
 <wire x1="-2" y1="72" x2="-2.1" y2="-0.2" width="0" layer="20"/>
+<text x="68" y="61" size="2.1844" layer="1" font="vector" ratio="16">ELRIC20-01A v0.1</text>
 </plain>
 <libraries>
 <library name="pinhead" urn="urn:adsk.eagle:library:325">
