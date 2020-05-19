@@ -1,7 +1,7 @@
 {
     "Header": {
         "Comment": "All values are metric (mm)",
-        "CreationDate": "2020-05-10T21:37:33Z",
+        "CreationDate": "2020-05-17T13:13:13Z",
         "GenerationSoftware": {
             "Application": "EAGLE",
             "Vendor": "Autodesk",
@@ -17,8 +17,8 @@
         },
         "Owner": "Pablo Ramon <pabramsor@gmail.com>",
         "Size": {
-            "X": 113.1,
-            "Y": 72.2
+            "X": 100,
+            "Y": 70
         }
     }
 }
