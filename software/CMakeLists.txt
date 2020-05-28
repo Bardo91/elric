@@ -27,6 +27,22 @@ cmake_minimum_required(VERSION 3.12)
 
 project(elric VERSION 1.0 LANGUAGES CXX)
 
+# Clasify sources according to folder structure.
+# This creates a nice layout for the project in visual studio
+# This macro is courtesy of http://www.cmake.org/pipermail/cmake/2013-November/056336.html
+macro(GroupSources curdir)
+	file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/${curdir}
+		${PROJECT_SOURCE_DIR}/${curdir}/*)
+	foreach(child ${children})
+		if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/${curdir}/${child})
+			GroupSources(${curdir}/${child})
+		else()
+			string(REPLACE "/" "\\" groupname ${curdir})
+			source_group(${groupname} FILES
+				${PROJECT_SOURCE_DIR}/${curdir}/${child})
+		endif()
+	endforeach()
+endmacro()
 
 ### TOOLCHAIN SETUP AREA #################################################
 # Set any variables used in the toolchain prior project() call. In that
@@ -132,6 +148,10 @@ file(GLOB_RECURSE HEADER_FILES "include/*.inl" "include/*.h")
 
 add_avr_library(elric ${SOURCE_FILES} ${HEADER_FILES})
 avr_target_include_directories(elric PUBLIC ./include)
+
+GroupSources(include)
+GroupSources(src)
+GroupSources(examples)
 
 ##################################################################################
 # add AVR executable

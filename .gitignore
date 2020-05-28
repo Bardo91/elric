@@ -1,3 +1,4 @@
 OldVersions
 software/.vscode/settings.json
 software/build
+/software/build_mvsc
