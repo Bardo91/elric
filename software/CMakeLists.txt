@@ -25,7 +25,6 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(elric VERSION 1.0 LANGUAGES CXX)
 
 # Clasify sources according to folder structure.
 # This creates a nice layout for the project in visual studio
@@ -63,8 +62,10 @@ if(NOT MCU_SPEED)
   set(MCU_SPEED "1600000UL")
 endif()
 ### END TOOLCHAIN SETUP AREA #############################################
+
 include(cmake/avr-compiler.cmake)
 
+project(elric VERSION 1.0 LANGUAGES CXX)
 
 ##################################################################################
 # set build type, if not already set at cmake command line
@@ -125,8 +126,10 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 add_definitions("-DF_CPU=${MCU_SPEED}")
 add_definitions("-fpack-struct")
 add_definitions("-fshort-enums")
-add_definitions("-Wall")
-add_definitions("-Werror")
+if(UNIX)
+	add_definitions("-Wall")
+	add_definitions("-Werror")
+endif()
 # http://gcc.gnu.org/onlinedocs/gcc-4.8.2/gcc/Alternate-Keywords.html#Alternate-Keywords
 # [...]-pedantic and other options cause warnings for many GNU C extensions. You can prevent such warnings within
 # one expression by writing __extension__ before the expression. __extension__ has no effect aside from this.[...] 
